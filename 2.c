@@ -31,7 +31,7 @@ void timer(void)
 void display()
 {
 	static char num = 0;
-	P1 = 0;
+	P1 = 0xFE;
 	P2 = num;
 	
 	if(++num > 9)
