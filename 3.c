@@ -1,6 +1,5 @@
 #include<REG_MPC82G516.H>
 
-void	timer(void);
 void	display(char HH, char MM, char SS);
 
 void main(void)
@@ -8,8 +7,21 @@ void main(void)
 	char HH = 23, MM = 59, SS = 58;
 	TMOD=1;
 	while(1){
-		display(HH, MM, SS);
-		timer();
+		char run20 = 20;
+		
+		while(run20--) {
+			TH0=60;
+			TL0=176;
+			TR0=1;
+			while(1){
+				display(HH, MM, SS);
+				
+				if(TF0==1){
+					TF0=0;
+					break;
+				}
+			}
+		}
 		
 		++SS;
 		if(SS >= 60) {
@@ -28,23 +40,6 @@ void main(void)
 
 }
 
-void timer(void)
-{
-	char run20 = 20;
-	
-	while(run20--) {
-		TH0=60;
-		TL0=176;
-		TR0=1;
-		while(1){
-			if(TF0==1){
-				TF0=0;
-				break;
-			}
-		}
-	}
-}
-
 void display(char HH, char MM, char SS)
 {
 	void show_digit(char pos, char num);
@@ -55,14 +50,14 @@ void display(char HH, char MM, char SS)
 }
 
 void show_digit(char pos, char num) {
-	char i;
+	unsigned char i;
 	
-	P1 = pos;
+	P1 = ~pos;
 	P2 = num / 10;
 	
 	for(i=0; i<250; i++);
 	
-	P1 = pos >> 1;
+	P1 = ~(pos >> 1);
 	P2 = num % 10;
 	
 	for(i=0; i<250; i++);
